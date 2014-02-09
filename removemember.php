@@ -23,29 +23,32 @@ if (mysqli_connect_errno())
   $query="SELECT * FROM members";
   $result = mysql_query($query);
   
+  echo "<form action='membersRemoved.php' method='post'>";
   echo "<table>";
-  echo "<tr>";
+  
   
   while( ($row = mysql_fetch_array($result)))
   {
   	echo "<tr>";
+  	echo "<td><input type='checkbox' name='medlemmar[]' value='" . $row['id'] . "'></td>";
   	echo "<td>".$row['id']."</td>";
   	echo "<td>".$row['namn']."</td>";
   	echo "<td>".$row['epost']."</td>";
   	echo "<td>".$row['url']."</td>";
 	echo "</tr>";
   }
-  echo "</tr>";
+  
+	echo "<input type='submit' name='formSubmit' value='Ta bort!'>";
+	
   echo "</table>";
+  echo "</form>";
   mysql_close();
+  
+  
+  
 ?>
 <br><br>
 
-
-<form action="executeRemove.php?namn=" method="get">
-  id: <input type="text" name="id"><br>
-  <input type="submit" value="Submit">
-</form>
 
 
 

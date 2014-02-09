@@ -33,5 +33,9 @@ if (mysqli_connect_errno())
 echo "databas klar";
   mysql_close();
 ?>
+<a href="index.php">Start</a><br>
+<a href="memberlist.php">Medlemslista</a><br>
+<a href="addmember.php">Lägg till ny medlem</a><br>
+<a href="removemember.php">Ta bort</a><br>
 </body>
 </html>

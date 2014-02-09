@@ -7,6 +7,9 @@
 
 <body>
 <?php
+require_once('ImageText.php');
+
+
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $randomString = '';
@@ -29,18 +32,49 @@ if (mysqli_connect_errno())
   {
   	echo "allt ok";
   }
+
+  
   $urlsnippet = 'memberfolder/';
   $generatedvalue = generateRandomString();
-  $memberName = $_GET['name'];
-  $query='INSERT INTO members (namn, epost, url) VALUES ("' . $_GET['name'] . '", "' .  $_GET['mail'] . '", "' . $urlsnippet . $generatedvalue . '.html")';
+    
+
+  
+  	$memberName = $_GET['name'];
+	$imagetext = new ImageText($memberName, 'memberfolder/' . $generatedvalue . '.png');
+  	$imagetext->createImageText();
+  	date_default_timezone_set("Europe/Stockholm");
+  	$oneYearOn = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " + 365 day"));
+  	echo $oneYearOn;
+  
+  $query='INSERT INTO members (namn, epost, url, expiryDate) VALUES ("' . $_GET['name'] . '", "' .  $_GET['mail'] . '", "' . $urlsnippet . $generatedvalue . '.html", "' . $oneYearOn . '")';
   $result = mysql_query($query);
-echo "databas klar<br>";
-echo $memberName;
+	//echo "databas klar<br>";
+	//echo $memberName;
+	
+	  if ($result == false)
+  {
+  	echo "fel i sqlsatsen";
+  }
   mysql_close();
   
 
 $ourFileHandle = fopen('memberfolder/' . $generatedvalue . '.html', 'w') or die("can't open file");
-$content = "<html><title>Mitt medlemskort</title><header><link rel='stylesheet' type='text/css' href='membercard.css'></header><body>" . $memberName . "</body></html>";
+$content = "<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Russo+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+<link rel='stylesheet' type='text/css' href='membercard.css'>
+<meta charset='UTF-8'>
+<title>Mitt medlemskort</title>
+</head>
+<body> 
+<div id='wrapper'>
+	<div id='container'>
+		<div class='container img'> <img src='/memberfolder/" . $generatedvalue . ".png'>	
+		</div>
+	</div>
+</div> 
+</body>
+</html>";
 fwrite($ourFileHandle,$content);
 fclose($ourFileHandle);
 
